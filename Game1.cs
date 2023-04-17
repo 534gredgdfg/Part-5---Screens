@@ -79,7 +79,7 @@ namespace Part_5___Screens
             titleText = Content.Load<SpriteFont>("File");
             instructText = Content.Load<SpriteFont>("File2");
             outroMusic = Content.Load<Song>("Outro-Music-Meme");
-            explodeInstance = outroMusic.CreateInstance();
+            explodeInstance ========= outroMusic.CreateInstance();
         }
 
         protected override void Update(GameTime gameTime)
