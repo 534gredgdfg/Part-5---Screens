@@ -18,11 +18,12 @@ namespace Part_5___Screens
         Vector2 tribbleGreySpeed, tribbleCreamSpeed, tribbleBrownSpeed, gravity;
         SoundEffect tribbleSound;
         Song outroMusic;
-        SoundEffectInstance explodeInstance;
+        
         MouseState mouseState;
 
         float seconds;
         float startTime;
+        
         float tribbleTime = 10;
         enum Screen
         {
@@ -47,9 +48,7 @@ namespace Part_5___Screens
             Random rand = new Random();
             int randomX = rand.Next(0, 600);
 
-            _graphics.PreferredBackBufferWidth = 800; // Sets the width of the window
-            _graphics.PreferredBackBufferHeight = 600; // Sets the height of the window
-            _graphics.ApplyChanges(); // Applies the new dimensions
+            
 
             BackroundRect = new Rectangle(0, 0, 800, 600);
 
@@ -79,7 +78,7 @@ namespace Part_5___Screens
             titleText = Content.Load<SpriteFont>("File");
             instructText = Content.Load<SpriteFont>("File2");
             outroMusic = Content.Load<Song>("Outro-Music-Meme");
-            explodeInstance ========= outroMusic.CreateInstance();
+            
         }
 
         protected override void Update(GameTime gameTime)
@@ -91,15 +90,29 @@ namespace Part_5___Screens
             // TODO: Add your update logic here
             if (screen == Screen.Intro)
             {
+                
                 if (mouseState.LeftButton == ButtonState.Pressed)
+                {
                     screen = Screen.TribbleYard;
+                    startTime = (float)gameTime.TotalGameTime.TotalSeconds ;
+                    _graphics.PreferredBackBufferWidth = 800; // Sets the width of the window
+                    _graphics.PreferredBackBufferHeight = 600; // Sets the height of the window
+                    _graphics.ApplyChanges(); // Applies the new dimensions
+                }
+                    
 
             }
             else if (screen == Screen.TribbleYard)
             {
+                
                 seconds = (float)gameTime.TotalGameTime.TotalSeconds - startTime;
                 if (seconds >= tribbleTime)
+                {
+                    MediaPlayer.Play(outroMusic);
                     screen = Screen.Outro;
+                }
+
+                
 
                 tribbleGreySpeed.Y += (int)gravity.Y;
                 tribbleCreamSpeed.Y += (int)gravity.Y;
@@ -114,12 +127,12 @@ namespace Part_5___Screens
                 tribbleBrownRect.X += (int)tribbleBrownSpeed.X;
                 tribbleBrownRect.Y += (int)tribbleBrownSpeed.Y;
 
-
-                if (tribbleGreyRect.X > 700 || tribbleGreyRect.X <= 0)
+                //Grey
+                if (tribbleGreyRect.Right > _graphics.PreferredBackBufferWidth || tribbleGreyRect.X <= 0)
                     tribbleGreySpeed.X *= -1;
 
 
-                if (tribbleGreyRect.Y > 480 || tribbleGreyRect.Y <= 0)
+                if (tribbleGreyRect.Bottom > _graphics.PreferredBackBufferHeight || tribbleGreyRect.Y <= 0)
                 {
                     tribbleGreySpeed.Y *= -1;
                     tribbleGreyRect.Y = 480;
@@ -127,20 +140,20 @@ namespace Part_5___Screens
                 }
 
 
-
-                if (tribbleCreamRect.X > 700 || tribbleCreamRect.X <= 0)
+                //Cream
+                if (tribbleCreamRect.Right > _graphics.PreferredBackBufferWidth || tribbleCreamRect.X <= 0)
                     tribbleCreamSpeed.X *= -1;
-                if (tribbleCreamRect.Y > 500 || tribbleCreamRect.Y <= 0)
+                if (tribbleCreamRect.Bottom >  _graphics.PreferredBackBufferHeight || tribbleCreamRect.Y <= 0)
                 {
                     tribbleCreamSpeed.Y *= -1;
                     tribbleCreamRect.Y = 500;
                     tribbleSound.Play();
                 }
 
-
-                if (tribbleBrownRect.X > 700 || tribbleBrownRect.X <= 0)
+                //Brown
+                if (tribbleBrownRect.Right > _graphics.PreferredBackBufferWidth || tribbleBrownRect.X <= 0)
                     tribbleBrownSpeed.X *= -1;
-                if (tribbleBrownRect.Y > 520 || tribbleBrownRect.Y <= 0)
+                if (tribbleBrownRect.Bottom > _graphics.PreferredBackBufferHeight || tribbleBrownRect.Y <= 0)
                 {
                     tribbleBrownSpeed.Y *= -1;
                     tribbleBrownRect.Y = 520;
@@ -150,7 +163,11 @@ namespace Part_5___Screens
             }
             else if (screen == Screen.Outro)
             {
-                outroMusic.P
+                if (MediaPlayer.State == MediaState.Stopped)
+                    System.Environment.Exit(0);
+
+
+
             }
             base.Update(gameTime);
         }
@@ -165,8 +182,9 @@ namespace Part_5___Screens
             {
                 
                 _spriteBatch.Draw(tribbleIntroTexture, new Rectangle(0, 0, 800, 500), Color.White);
-                _spriteBatch.DrawString(titleText, "Welcome to the Tribble Tribe", new Vector2(120, 500), Color.Black);
-                _spriteBatch.DrawString(instructText, $"You will have {tribbleTime} seconds with the tribbles", new Vector2(100, 550), Color.Black);
+                _spriteBatch.DrawString(titleText, "Welcome to the Tribble Tribe", new Vector2(120, 300), Color.White);
+                _spriteBatch.DrawString(instructText, $"You will have {tribbleTime} seconds with the tribbles", new Vector2(100, 350), Color.White);
+                _spriteBatch.DrawString(instructText, "Click to Continue", new Vector2(260, 400), Color.White);
             }
             else if (screen == Screen.TribbleYard)
             {
@@ -179,7 +197,8 @@ namespace Part_5___Screens
             }
             else if (screen == Screen.Outro)
             {
-                _spriteBatch.DrawString(titleText, "See you next time!", new Vector2(100, 250), Color.Black);
+               
+                _spriteBatch.DrawString(titleText, "See you next time!", new Vector2(200, 250), Color.Black);
             }
             _spriteBatch.End();
             base.Draw(gameTime);
